@@ -11,6 +11,7 @@
     "test:e2e": "playwright test",
     "android:assets": "npm run build && node scripts/sync-android-assets.mjs",
     "android:build": "npm run android:assets && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run android:assets && cd android && ./gradlew assembleRelease && cd .. && node scripts/package-android-release.mjs",
     "format": "prettier --write src e2e scripts docs README.md android/README.md *.ts *.js *.json index.html"
   },
   "keywords": [],

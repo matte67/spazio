@@ -1,4 +1,16 @@
 plugins { id("com.android.application"); id("org.jetbrains.kotlin.android") }
+
+// Release credentials come from the local environment, never from committed files.
+val releaseStoreFile = System.getenv("SPAZIO_KEYSTORE_PATH")
+val releaseStorePassword = System.getenv("SPAZIO_KEYSTORE_PASSWORD")
+val releaseKeyAlias = System.getenv("SPAZIO_KEY_ALIAS")
+val releaseKeyPassword = System.getenv("SPAZIO_KEY_PASSWORD")
+val hasReleaseSigning = listOf(
+    releaseStoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
 android {
     namespace = "it.spazio.tv"
     compileSdk = 35
@@ -15,6 +27,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildTypes { release { isMinifyEnabled = false } }
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("production") {
+                storeFile = file(requireNotNull(releaseStoreFile))
+                storePassword = requireNotNull(releaseStorePassword)
+                keyAlias = requireNotNull(releaseKeyAlias)
+                keyPassword = requireNotNull(releaseKeyPassword)
+            }
+        }
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("production")
+        }
+    }
 }
 dependencies { implementation("androidx.webkit:webkit:1.12.1") }

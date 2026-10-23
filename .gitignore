@@ -6,5 +6,8 @@ test-results/
 .DS_Store
 android/.gradle/
 android/local.properties
+android/keystore.properties
+*.jks
+*.keystore
 android/**/build/
 android/app/src/main/assets/launcher/

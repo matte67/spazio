@@ -9,6 +9,20 @@
 i collegamenti agli ingressi disponibili e i contenuti condivisi dalle app installate.
 La schermata web è inclusa nell’app: per avviarla sulla TV non serve tenere acceso il computer.
 
+## Anteprima
+
+<p align="center">
+  <img src="public/showcase/home_base.png" alt="Schermata Home di Spazio con app preferite e contenuti" width="48%">
+  <img src="public/showcase/settings_view.png" alt="Pannello impostazioni e selezione degli sfondi" width="48%">
+</p>
+<p align="center"><sub>Home e impostazioni</sub></p>
+
+<p align="center">
+  <img src="public/showcase/minecraft_theme.png" alt="Interfaccia Spazio con tema Minecraft e decorazione dedicata" width="48%">
+  <img src="public/showcase/luis_vuitton_theme.png" alt="Interfaccia Spazio con pattern e tema Louis Vuitton" width="48%">
+</p>
+<p align="center"><sub>Temi Minecraft e Louis Vuitton</sub></p>
+
 > [!IMPORTANT]
 > Spazio richiede **Android TV o Google TV con Android 11 o successivo**. Il sistema
 > operativo dipende dal modello, non solo dalla marca. Non installare questo APK su
@@ -23,7 +37,8 @@ La schermata web è inclusa nell’app: per avviarla sulla TV non serve tenere a
 - [Imposta Spazio come Home principale](#imposta-spazio-come-home-principale)
 - [Caso speciale: MiTV-MSSP2](#caso-speciale-mitv-mssp2)
 - [Problemi comuni](#problemi-comuni)
-- [Build dell’APK dal progetto](#build-dellapk-dal-progetto)
+- [Crea il pacchetto `Spazio.apk`](#crea-il-pacchetto-spazioapk)
+- [Pubblica l’APK per il download](#pubblica-lapk-per-il-download)
 - [Sviluppo e architettura](#sviluppo-e-architettura)
 
 ## Installazione in breve
@@ -37,7 +52,7 @@ se il firmware offre il debug wireless.
 ## Prima di iniziare
 
 - Una TV o un dispositivo collegato alla TV con **Android TV / Google TV 11+**.
-- L’APK di Spazio. Se non ne hai già uno, [crealo dal progetto](#build-dellapk-dal-progetto).
+- L’APK di Spazio. Se non ne hai già uno, [crealo dal progetto](#crea-il-pacchetto-spazioapk).
 - Per USB: una chiavetta e un file manager disponibile sulla TV.
 - Per ADB: un computer con Android Platform Tools. Per la connessione Wi-Fi, computer e TV
   devono essere sulla stessa rete locale.
@@ -52,9 +67,9 @@ che il sistema sia Android TV o Google TV e che la versione Android sia almeno 1
 
 Questo metodo installa il file copiandolo sulla TV. **Non servono USB debugging o ADB.**
 
-1. Copia `app-debug.apk` dal computer a una chiavetta USB.
+1. Copia `Spazio.apk` dal computer a una chiavetta USB.
 2. Collega la chiavetta alla TV e apri un’app **File** o **Gestione file**.
-3. Seleziona `app-debug.apk` e scegli **Installa**.
+3. Seleziona `Spazio.apk` e scegli **Installa**.
 4. Se Android blocca l’installazione, apri le impostazioni mostrate nel messaggio e abilita
    **Consenti da questa sorgente** per il file manager che stai usando. Torna al file e installalo.
 5. Al termine, scegli **Apri**. Per usare Spazio anche con il tasto Home, continua con
@@ -132,7 +147,7 @@ dal firmware della TV. [Opzioni sviluppatore Android](https://developer.android.
 Dalla cartella principale del progetto, esegui:
 
 ```sh
-adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+adb install -r dist/Spazio.apk
 ```
 
 L’opzione `-r` reinstalla l’app mantenendo i dati locali, se la firma dell’APK è la stessa.
@@ -201,9 +216,12 @@ adb shell cmd package set-home-activity --user 0 com.google.android.tvlauncher/.
 | Home continua ad aprire Google TV | Seleziona Spazio come app Home predefinita. Se il firmware lo ignora, consulta la procedura specifica del produttore. |
 | Spazio non appare tra le app Home | Verifica che il modello sia Android TV/Google TV, non un sistema proprietario come Tizen o webOS. |
 
-## Build dell’APK dal progetto
+## Crea il pacchetto `Spazio.apk`
 
-Questa sezione serve se non hai già il file APK. Non serve per installare un APK ricevuto da un’altra persona.
+Il progetto contiene al momento una build **debug** per lo sviluppo, non un pacchetto release
+pronto da distribuire. Per creare `Spazio.apk` serve una chiave di firma release. Android usa
+la stessa chiave per riconoscere gli aggiornamenti: conservala in un posto sicuro e non
+caricarla mai nella repository.
 
 ### Requisiti del computer
 
@@ -214,23 +232,81 @@ Questa sezione serve se non hai già il file APK. Non serve per installare un AP
 
 ### Compila
 
+#### 1. Crea la chiave di firma (solo la prima volta)
+
+Sul computer, crea una cartella privata e genera una chiave con `keytool` (incluso nel JDK):
+
+```sh
+mkdir -p "$HOME/.android"
+keytool -genkeypair -v -keystore "$HOME/.android/spazio-release.jks" -keyalg RSA -keysize 2048 -validity 10000 -alias spazio
+```
+
+`keytool` chiederà di scegliere una password e di confermare i dati. Conserva il file
+`spazio-release.jks` e le password in un password manager o in un backup sicuro. Se perdi
+questa chiave, Android non accetterà la release successiva come aggiornamento dell’app già
+installata.
+
+#### 2. Imposta le credenziali per il terminale
+
+Prima di compilare, rendi disponibili queste quattro variabili d’ambiente nella sessione
+del terminale. Inserisci le password scelte durante la creazione della chiave; non salvarle
+nei file del progetto e non condividerle:
+
+| Variabile | Valore |
+| --- | --- |
+| `SPAZIO_KEYSTORE_PATH` | Percorso completo di `spazio-release.jks` |
+| `SPAZIO_KEYSTORE_PASSWORD` | Password del keystore |
+| `SPAZIO_KEY_ALIAS` | `spazio` |
+| `SPAZIO_KEY_PASSWORD` | Password della chiave (quella richiesta da `keytool`) |
+
+Su macOS/Linux puoi inserirle nella sessione corrente con `export NOME="valore"`;
+su Windows, impostale nella sessione di PowerShell. Evita di scrivere le password dentro
+comandi che verranno salvati nella cronologia del terminale.
+
+Su macOS, nel Terminale predefinito (zsh), questo esempio chiede le password senza
+mostrarle mentre le digiti:
+
+```sh
+export SPAZIO_KEYSTORE_PATH="$HOME/.android/spazio-release.jks"
+export SPAZIO_KEY_ALIAS="spazio"
+read -s 'SPAZIO_KEYSTORE_PASSWORD?Password keystore: '; echo
+read -s 'SPAZIO_KEY_PASSWORD?Password chiave: '; echo
+export SPAZIO_KEYSTORE_PASSWORD SPAZIO_KEY_PASSWORD
+```
+
+Tieni aperto quel Terminale mentre esegui il comando di build qui sotto. Al termine
+cancella le password dalla sessione:
+
+```sh
+unset SPAZIO_KEYSTORE_PASSWORD SPAZIO_KEY_PASSWORD
+```
+
+#### 3. Genera l’APK release firmato
+
 Dalla cartella principale del progetto:
 
 ```sh
 npm ci
-npm run android:build
+npm run android:release
 ```
 
-Al termine trovi il pacchetto qui:
+Il comando compila gli asset, crea la release firmata e copia il file qui:
 
 ```text
-android/app/build/outputs/apk/debug/app-debug.apk
+dist/Spazio.apk
 ```
 
-È una **build debug per installazioni personali e prove**. Per distribuirla pubblicamente o
-tramite uno store occorre creare una build release firmata e mantenere al sicuro la stessa
-chiave per gli aggiornamenti. Android richiede la firma digitale degli APK.
-[Preparare l’app per la distribuzione](https://developer.android.com/studio/publish/preparing/).
+`dist/` è ignorata da Git: l’APK non viene aggiunto per errore alla repository sorgente.
+Per Android, la build release deve essere firmata e la chiave privata va mantenuta segreta;
+la stessa firma deve essere usata per gli aggiornamenti.
+[Documentazione Android sulla firma delle app](https://developer.android.com/studio/publish/app-signing).
+
+## Pubblica l’APK per il download
+
+Se la repository è su GitHub, è preferibile allegare `Spazio.apk` a una **GitHub Release**
+con versione e note di rilascio, invece di commetterlo tra i file sorgente. Così il codice
+resta leggero e chi scarica trova il pacchetto nella pagina Releases.
+[Guida GitHub alle release e ai file allegati](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
 
 ## Sviluppo e architettura
 
