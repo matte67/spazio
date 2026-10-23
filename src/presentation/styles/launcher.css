@@ -1,0 +1,1048 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #06090d;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+#root {
+  /* Keep the frame stable when the modal library locks body scrolling. */
+  padding: var(--frame-inset);
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+  border: 0;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button:focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 6px;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+button svg {
+  flex-shrink: 0;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+.launcher {
+  position: relative;
+  isolation: isolate;
+  height: calc(100vh - var(--frame-inset) * 2);
+  min-height: 560px;
+  overflow: hidden;
+  border-radius: var(--frame-radius);
+  background: #152025;
+}
+.wallpaper-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+.wallpaper-base,
+.wallpaper-progressive {
+  position: absolute;
+  inset: -72px;
+  background: url('/wallpapers/horizon.svg') center / cover no-repeat;
+  transition: filter var(--scene-duration) var(--ease);
+}
+.wallpaper-base {
+  filter: var(--wallpaper-tone, brightness(1)) blur(var(--wallpaper-blur));
+}
+.wallpaper-progressive {
+  filter: var(--wallpaper-tone, brightness(1)) blur(var(--wallpaper-blur-bottom));
+  -webkit-mask-image: linear-gradient(transparent 12%, #000 82%);
+  mask-image: linear-gradient(transparent 12%, #000 82%);
+}
+/* This preference affects wallpaper only; dock and content glass keep their own blur. */
+.wallpaper-backdrop--sharp {
+  --wallpaper-blur: 0px;
+}
+.wallpaper-backdrop--sharp .wallpaper-base {
+  inset: 0;
+}
+.wallpaper--night {
+  --wallpaper-tone: hue-rotate(25deg) saturate(0.65) brightness(0.58);
+}
+.wallpaper--sand {
+  --wallpaper-tone: sepia(0.65) saturate(0.8) hue-rotate(340deg);
+}
+.wallpaper-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(9, 16, 22, 0.48), rgba(9, 16, 22, 0.2) 42%, rgba(9, 16, 22, 0.78)),
+    linear-gradient(90deg, rgba(9, 16, 22, 0.32), rgba(9, 16, 22, 0.15));
+}
+/* A single repeated SVG layer keeps the dense wallpaper texture inexpensive. */
+.wallpaper-pattern--backdrop .wallpaper-shade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/theme-logos/louis-vuitton-pattern.svg') repeat;
+  background-size: 52px 52px;
+  opacity: 0.09;
+  pointer-events: none;
+}
+.launcher-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  position: absolute;
+  z-index: 4;
+  inset: 0 0 auto;
+  height: var(--header-height);
+  padding: 0 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 -32px;
+  background: rgba(8, 13, 17, 0.16);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 54%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 54%, transparent 100%);
+  pointer-events: none;
+}
+.glass-dock {
+  border-radius: var(--dock-radius);
+  background: var(--navigation-surface);
+  -webkit-backdrop-filter: var(--navigation-filter);
+  backdrop-filter: var(--navigation-filter);
+}
+.wallpaper--bg-6 .glass-dock,
+.wallpaper--bg-6 .favorite-surface {
+  isolation: isolate;
+  -webkit-backdrop-filter: blur(34px) saturate(1.15);
+  backdrop-filter: blur(34px) saturate(1.15);
+}
+.wallpaper--bg-6 .content-details,
+.wallpaper--bg-6 .content-playback-state {
+  isolation: isolate;
+}
+.wallpaper-pattern--surfaces .glass-dock::after,
+.wallpaper-pattern--surfaces .favorite-surface::after,
+.wallpaper-pattern--surfaces .content-details::after,
+.wallpaper-pattern--surfaces .content-playback-state::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.wallpaper-pattern--surfaces .glass-dock::after,
+.wallpaper-pattern--surfaces .favorite-surface::after,
+.wallpaper-pattern--surfaces .content-details::after,
+.wallpaper-pattern--surfaces .content-playback-state::after {
+  z-index: 0;
+  background: url('/theme-logos/louis-vuitton-pattern.svg') repeat;
+  background-size: 28px 28px;
+  opacity: 0.14;
+}
+.wallpaper--bg-6 .glass-dock > *,
+.wallpaper--bg-6 .content-details > *,
+.wallpaper--bg-6 .content-playback-state > * {
+  position: relative;
+  z-index: 1;
+}
+.wallpaper--bg-6 .favorite-surface > * {
+  z-index: 1;
+}
+.header-status {
+  position: absolute;
+  z-index: 3;
+  left: var(--dock-inset);
+  top: var(--dock-inset);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  width: var(--dock-length);
+  height: var(--dock-size);
+  padding: var(--dock-padding);
+}
+.clock {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.clock-symbol {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.clock-symbol svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.7;
+}
+.clock-reading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+.clock time {
+  font-family: 'Avenir Next', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.theme-logo {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.theme-logo--monogram {
+  width: 44px;
+  height: 44px;
+  filter: brightness(0) invert(1);
+}
+.theme-logo--wordmark {
+  width: 140px;
+  height: 48px;
+}
+.header-status--themed .clock {
+  gap: 8px;
+}
+.header-status--themed .clock time {
+  font-size: 26px;
+}
+.header-status--themed .clock-symbol svg {
+  width: 24px;
+  height: 24px;
+}
+.header-status--with-clock .theme-logo--wordmark {
+  width: 140px;
+}
+/* The compact glass dock is explicitly requested in the reference sketch. */
+.navigation {
+  position: absolute;
+  z-index: 3;
+  left: var(--dock-inset);
+  top: calc(50vh - var(--dock-half-length) - var(--frame-inset));
+  width: var(--dock-size);
+  height: var(--dock-length);
+  padding: var(--dock-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--dock-gap);
+}
+.nav-item {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--dock-control-size);
+  height: var(--dock-control-size);
+  border-radius: calc(var(--dock-control-size) / 2);
+  color: #e2e7e1;
+  transition:
+    background var(--focus-duration),
+    color var(--focus-duration),
+    transform var(--focus-duration) var(--ease);
+}
+.nav-item svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.7;
+}
+.nav-item.active {
+  background: #e9eee6;
+  color: #25302d;
+}
+.nav-item:focus:not(.active) {
+  background: rgba(255, 255, 255, 0.1);
+}
+.nav-item:active {
+  transform: scale(0.94);
+}
+.nav-label {
+  position: absolute;
+  left: 96px;
+  padding: 10px 15px;
+  background: #222e30;
+  color: #f2f5ee;
+  border-radius: 10px;
+  font-size: 15px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-5px);
+  transition:
+    opacity 150ms,
+    transform 150ms;
+  white-space: nowrap;
+}
+.nav-item:focus .nav-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* Android WebView can retain synthetic hover after a remote click; focus stays independent. */
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .nav-item:hover .nav-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.main-content {
+  flex: 1;
+  min-height: 0;
+  padding: calc(var(--header-height) + 70px) 0 30px 190px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #64726a transparent;
+}
+.main-content:not(.main-content--apps) {
+  padding-top: calc(var(--header-height) + var(--home-content-top));
+}
+.apps-section {
+  width: 100%;
+  padding-right: 50px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-right: 30px;
+  margin-bottom: 32px;
+}
+.section-heading h1 {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: clamp(28px, 2.05vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.app-count {
+  font-size: 16px;
+  color: #c4cec6;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.section-heading p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 15px;
+  color: #c6d0c8;
+  font-size: 16px;
+}
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  row-gap: 30px;
+  padding: 14px 14px 28px;
+  margin-left: -14px;
+}
+.apps-grid--favorites {
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(340px, 25vw, 480px);
+  grid-template-columns: none;
+  overflow-x: auto;
+  /* Keep the logo and focus inside the opaque area at either scroll boundary. */
+  padding: 18px 90px 38px 78px;
+  margin-left: -78px;
+  scroll-padding-inline: 78px 90px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 64px,
+    #000 calc(100% - 64px),
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+}
+.apps-grid--favorites::-webkit-scrollbar {
+  display: none;
+}
+.app-item {
+  min-width: 0;
+}
+.app-tile {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: clamp(165px, 11.55vw, 222px);
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--app-color, #233136);
+  box-shadow: var(--card-shadow);
+  text-align: left;
+  transition:
+    transform var(--focus-duration) var(--ease),
+    filter var(--focus-duration);
+  scroll-margin: 24px 96px;
+}
+.app-tile:hover,
+.app-tile:focus {
+  transform: scale(1.035);
+  filter: brightness(1.08);
+}
+.app-tile:active {
+  transform: scale(0.985);
+}
+/* The hit area includes the logo; only the inset surface forms the card. */
+.app-tile.favorite-card {
+  height: clamp(220px, 15vw, 288px);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.favorite-card:focus {
+  outline: none;
+}
+.favorite-card:focus .favorite-surface {
+  outline: 3px solid var(--focus);
+  outline-offset: 6px;
+}
+.favorite-surface {
+  position: absolute;
+  inset: 22px 0 22px 88px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #e9ece6;
+  box-shadow: var(--card-shadow);
+}
+.favorite-background,
+.favorite-surface-wash {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.favorite-background {
+  object-fit: cover;
+  filter: blur(var(--favorite-banner-blur));
+  /* Overscan keeps the blurred image opaque at the clipped surface edges. */
+  transform: scale(1.52);
+}
+.favorite-surface-wash {
+  background: linear-gradient(
+    90deg,
+    rgba(6, 9, 13, 0.78) 0%,
+    rgba(6, 9, 13, 0.26) 45%,
+    transparent 100%
+  );
+}
+.favorite-logo-fade {
+  position: absolute;
+  z-index: 1;
+  inset: 0 auto 0 0;
+  width: clamp(128px, 13vw, 180px);
+  /* The surface clips this narrow accent to the card's rounded bounds. */
+  background: linear-gradient(
+    90deg,
+    rgba(6, 9, 13, 0.72) 0%,
+    rgba(6, 9, 13, 0.38) 48%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.favorite-floating-logo {
+  position: absolute;
+  z-index: 2;
+  inset: 26px auto 26px 0;
+  width: 44%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.22));
+}
+.favorite-floating-logo > svg,
+.favorite-floating-logo > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.favorite-logo-fallback {
+  color: #34433c;
+  padding: 28px;
+  stroke-width: 1.3;
+}
+.wallpaper-decoration {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: 50%;
+  width: 60%;
+  /* Cut off the lower 8% of the supplied artwork beneath the screen frame. */
+  transform: translate(-50%, 8%);
+  pointer-events: none;
+  user-select: none;
+}
+.wallpaper-decoration--bg-6 {
+  display: flex;
+  width: 100%;
+  opacity: 0.78;
+}
+.wallpaper-decoration--bg-1,
+.wallpaper-decoration--bg-4 {
+  width: 100%;
+  opacity: 0.82;
+}
+.wallpaper-decoration--bg-3,
+[class~="wallpaper-decoration--file:bg-1.png"] {
+  width: 100%;
+  opacity: 0.82;
+}
+.wallpaper-decoration--bg-8 {
+  width: 100%;
+  opacity: 0.82;
+}
+.wallpaper-decoration--bg-5,
+.wallpaper-decoration--bg-9,
+.wallpaper-decoration--bg-10 {
+  width: 80%;
+  opacity: 0.78;
+}
+.wallpaper-bottom-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.wallpaper-decoration--bg-6 .wallpaper-bottom-art {
+  width: 50%;
+}
+/* Clip artwork, never the accessible outline around the actionable surface. */
+.app-artwork-backdrop,
+.app-artwork-fade,
+.app-artwork-shine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+}
+.app-artwork-backdrop {
+  object-fit: cover;
+  opacity: 0.24;
+  clip-path: inset(0 round 24px);
+}
+.app-artwork-fade {
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.04),
+    transparent 60%,
+    rgba(0, 0, 0, 0.15)
+  );
+}
+.app-artwork-shine {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 55%);
+}
+.app-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(90deg, #000 60%, rgba(0, 0, 0, 0.1) 100%);
+  mask-image: linear-gradient(90deg, #000 60%, rgba(0, 0, 0, 0.1) 100%);
+}
+.native-icon {
+  object-fit: contain;
+  max-width: 86%;
+  max-height: 90%;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+}
+.app-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  min-height: 44px;
+  padding: 0 4px;
+  color: #e0e6de;
+  font-size: 21px;
+}
+.app-caption > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pin-button {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  width: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: #aebbb0;
+}
+.pin-button[aria-pressed='true'] {
+  color: var(--accent);
+}
+.pin-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.launching {
+  position: absolute;
+  bottom: 12px;
+  left: 20px;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+  color: white;
+  background: #15201d;
+}
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.icon-button:hover,
+.icon-button:focus {
+  background: rgba(255, 255, 255, 0.1);
+}
+.icon-button svg {
+  width: 25px;
+  height: 25px;
+  stroke-width: 1.6;
+}
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 54px;
+  padding: 0 24px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #1b2723;
+  font-size: 17px;
+  font-weight: 600;
+  transition:
+    transform var(--focus-duration) var(--ease),
+    background var(--focus-duration);
+}
+.primary-button:hover,
+.primary-button:focus {
+  background: #f2f6e8;
+  transform: translateY(-2px);
+}
+.primary-button:active {
+  transform: scale(0.97);
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 18px;
+  color: #e1e8df;
+  transition: background 180ms;
+}
+.text-button:hover,
+.text-button:focus {
+  background: rgba(255, 255, 255, 0.07);
+}
+.scene-enter {
+  animation: scene-in var(--scene-duration) var(--ease);
+}
+@keyframes scene-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes loading-pulse {
+  to {
+    opacity: 0.3;
+  }
+}
+@media (max-width: 1400px) {
+  :root {
+    --home-content-top: 34px;
+    --header-height: 112px;
+    --dock-control-size: 60px;
+    --dock-gap: 12px;
+    --dock-inset: 28px;
+    --dock-size: 78px;
+    --dock-padding: 9px;
+    --dock-radius: 39px;
+  }
+  .header {
+    height: var(--header-height);
+    padding: 0 42px;
+  }
+  .clock time {
+    font-size: 29px;
+  }
+  .main-content {
+    padding: calc(var(--header-height) + 52px) 0 18px 154px;
+  }
+  .apps-section {
+    padding-right: 32px;
+  }
+  .section-heading {
+    padding-right: 15px;
+  }
+  .header-status--themed .clock time {
+    font-size: 24px;
+  }
+  .header-status--themed .clock-symbol svg {
+    width: 22px;
+    height: 22px;
+  }
+  .header-status--with-clock .theme-logo--wordmark {
+    width: 120px;
+  }
+  .apps-grid {
+    gap: 22px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .apps-grid--favorites {
+    grid-template-columns: none;
+    grid-auto-columns: 360px;
+  }
+  .app-caption {
+    font-size: 18px;
+  }
+}
+@media (max-width: 900px) and (min-width: 601px) {
+  .apps-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .apps-grid--favorites {
+    grid-template-columns: none;
+  }
+}
+@media (max-width: 600px) {
+  :root {
+    --home-content-top: 28px;
+    --dock-control-size: 56px;
+    --dock-gap: 10px;
+    --dock-size: 72px;
+    --dock-padding: 8px;
+    --dock-radius: 36px;
+    --frame-inset: 8px;
+    --frame-radius: 24px;
+    --wallpaper-blur: 8px;
+    --wallpaper-blur-bottom: 24px;
+  }
+  .launcher {
+    height: auto;
+    min-height: calc(100vh - 16px);
+  }
+  .header {
+    position: static;
+    z-index: auto;
+    inset: auto;
+    height: auto;
+    min-height: 170px;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 24px 16px;
+    flex-wrap: wrap;
+  }
+  .header::before {
+    display: none;
+  }
+  .clock time {
+    font-size: 26px;
+  }
+  .header-status {
+    position: static;
+    height: var(--dock-size);
+    width: var(--dock-length);
+    max-width: 100%;
+    padding: var(--dock-padding);
+    gap: 8px;
+    border-radius: 36px;
+    margin-inline: auto;
+  }
+  .clock {
+    gap: 12px;
+  }
+  .clock-symbol svg {
+    width: 24px;
+    height: 24px;
+  }
+  .theme-logo--wordmark {
+    width: 112px;
+    height: 40px;
+  }
+  .theme-logo--monogram {
+    width: 40px;
+    height: 40px;
+  }
+  .glass-dock {
+    background: rgba(68, 83, 78, 0.7);
+  }
+  .navigation {
+    position: static;
+    transform: none;
+    order: 3;
+    margin: 0 auto;
+    flex-direction: row;
+    gap: 10px;
+    width: var(--dock-length);
+    height: var(--dock-size);
+    padding: var(--dock-padding);
+    border-radius: var(--dock-radius);
+  }
+  .header-status--with-clock .theme-logo--wordmark {
+    width: 112px;
+  }
+  .header-status--themed .clock time {
+    font-size: 22px;
+  }
+  .header-status--themed .clock-symbol svg {
+    width: 20px;
+    height: 20px;
+  }
+  .nav-item svg {
+    width: 24px;
+    height: 24px;
+  }
+  .nav-label {
+    display: none;
+  }
+  .main-content {
+    padding: 28px 24px 0;
+    overflow: visible;
+  }
+  .main-content:not(.main-content--apps) {
+    padding-top: var(--home-content-top);
+  }
+  .apps-section {
+    padding-right: 0;
+  }
+  .section-heading {
+    gap: 12px;
+    padding-right: 0;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+  .section-heading h1 {
+    font-size: 27px;
+    gap: 10px;
+  }
+  .app-count {
+    font-size: 13px;
+  }
+  .section-heading .text-button {
+    font-size: 13px;
+    padding: 4px;
+    min-height: 38px;
+    gap: 5px;
+  }
+  .section-heading p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .apps-grid,
+  .apps-grid--favorites {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: auto;
+    overflow: visible;
+    margin-left: 0;
+    gap: 20px;
+    padding: 8px 0 22px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .app-tile {
+    height: 112px;
+    border-radius: 18px;
+    padding: 13px;
+  }
+  .apps-grid--favorites {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-tile.favorite-card {
+    height: 190px;
+    /* The surface clips its own artwork; keep the outer focus ring visible. */
+    overflow: visible;
+  }
+  .favorite-surface {
+    inset: 18px 0 18px 64px;
+    border-radius: 18px;
+  }
+  .favorite-floating-logo {
+    inset-block: 24px;
+  }
+  .app-artwork-backdrop {
+    clip-path: inset(0 round 18px);
+  }
+  .app-caption {
+    font-size: 14px;
+    min-height: 40px;
+    margin-top: 7px;
+    padding: 0;
+    gap: 2px;
+  }
+  .pin-button {
+    width: 44px;
+    height: 44px;
+  }
+  .pin-button svg {
+    width: 16px;
+  }
+  .brand-youtube {
+    font-size: 19px;
+    letter-spacing: -1px;
+    gap: 4px;
+  }
+  .brand-youtube > span {
+    width: 26px;
+    height: 20px;
+    border-radius: 6px;
+  }
+  .brand-youtube svg {
+    width: 15px;
+  }
+  .brand-netflix {
+    font-size: 25px;
+  }
+  .brand-prime {
+    font-size: 22px;
+  }
+  .brand-spotify {
+    font-size: 20px;
+    gap: 5px;
+  }
+  .brand-spotify svg {
+    width: 24px;
+    height: 24px;
+  }
+  .brand-disney {
+    font-size: 30px;
+  }
+  .brand-rai {
+    font-size: 29px;
+  }
+  .settings-panel {
+    inset: 12px;
+    width: auto;
+    padding: 28px;
+    border-radius: 24px;
+  }
+  .panel-heading h2 {
+    font-size: 32px;
+  }
+  .settings-panel > p {
+    font-size: 16px;
+  }
+  .settings-section {
+    margin-top: 32px;
+  }
+  .settings-section h3 {
+    font-size: 16px;
+  }
+  .wallpaper-options {
+    gap: 12px;
+  }
+  .wallpaper-option {
+    font-size: 12px;
+  }
+  .setting-toggle,
+  .system-settings {
+    font-size: 15px;
+  }
+  .preview-dialog {
+    padding: 28px;
+  }
+  .native-icon {
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .app-tile:hover,
+  .app-tile:focus,
+  .app-tile:active,
+  .primary-button:hover,
+  .primary-button:focus,
+  .primary-button:active,
+  .nav-item:active {
+    transform: none;
+  }
+}
+:root[data-motion='off'] *,
+:root[data-motion='off'] *:before,
+:root[data-motion='off'] *:after {
+  animation: none !important;
+  transition: none !important;
+}
+:root[data-motion='off'] .app-tile,
+:root[data-motion='off'] .primary-button,
+:root[data-motion='off'] .nav-item {
+  transform: none !important;
+}

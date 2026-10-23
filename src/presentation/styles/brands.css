@@ -1,0 +1,124 @@
+.app-tile--youtube {
+  --app-color: #f2f2ed;
+  background: var(--app-color);
+  color: #171b1b;
+}
+.app-tile--youtube:hover,
+.app-tile--youtube:focus {
+  background: white;
+}
+.brand-youtube {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(20px, 1.75vw, 33px);
+  font-weight: 700;
+  letter-spacing: -1.5px;
+}
+.brand-youtube > span {
+  background: #ed292a;
+  color: white;
+  border-radius: 8px;
+  width: 39px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+}
+.brand-youtube svg {
+  width: 20px;
+  height: 20px;
+}
+.app-tile--netflix {
+  --app-color: #1c1c20;
+  background: var(--app-color);
+}
+.brand-netflix {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(22px, 2vw, 39px);
+  font-weight: 800;
+  color: #ed2839;
+  letter-spacing: -0.02em;
+}
+.app-tile--prime {
+  --app-color: #132b42;
+  background: var(--app-color);
+}
+.brand-prime {
+  font-size: clamp(23px, 1.95vw, 38px);
+  font-weight: 650;
+  letter-spacing: -0.06em;
+  position: relative;
+  padding-bottom: 10px;
+}
+.prime-smile {
+  position: absolute;
+  width: 55%;
+  height: 14px;
+  border-bottom: 3px solid #48b9eb;
+  border-radius: 0 0 60% 60%;
+  left: 27%;
+  bottom: 0;
+  transform: rotate(-5deg);
+}
+.app-tile--disney {
+  --app-color: #182440;
+  background: var(--app-color);
+}
+.brand-disney {
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 2.5vw, 48px);
+  font-style: italic;
+  letter-spacing: -0.06em;
+}
+.brand-disney > span {
+  font: 300 0.8em sans-serif;
+  margin-left: 4px;
+}
+.app-tile--spotify {
+  --app-color: #16312a;
+  background: var(--app-color);
+}
+.brand-spotify {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(22px, 1.85vw, 35px);
+  letter-spacing: -0.06em;
+  font-weight: 650;
+  color: #69da91;
+}
+.brand-spotify svg {
+  width: 35px;
+  height: 35px;
+}
+.app-tile--rai {
+  --app-color: #203954;
+  background: var(--app-color);
+}
+.brand-rai {
+  font-size: clamp(25px, 2.4vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.065em;
+}
+.brand-rai > span {
+  font-weight: 350;
+}
+.app-item--featured > .app-caption {
+  display: none;
+}
+
+.app-tile--playstation {
+  --app-color: #07529a;
+  background: var(--app-color);
+}
+.input-shortcut-logo {
+  display: flex;
+  width: 75%;
+  align-items: center;
+  justify-content: center;
+}
+.input-shortcut-logo svg {
+  width: 100%;
+  height: 100%;
+  max-height: 120px;
+}

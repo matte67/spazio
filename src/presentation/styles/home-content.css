@@ -1,0 +1,248 @@
+.home-content-section {
+  margin-top: 24px;
+  padding: 0 50px 32px 0;
+}
+.content-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+.home-content-section h2 {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.content-group + .content-group {
+  margin-top: 20px;
+}
+.content-rail {
+  --content-edge-fade: 40px;
+  --content-edge-inset: calc(var(--content-edge-fade) + 14px);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 320px;
+  gap: 22px;
+  overflow-x: auto;
+  padding: 14px var(--content-edge-inset) 26px;
+  margin-left: calc(-1 * var(--content-edge-inset));
+  scroll-padding-inline: var(--content-edge-inset);
+  scrollbar-width: none;
+}
+.content-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  gap: var(--content-block-gap);
+  padding: 0;
+  text-align: left;
+  border-radius: var(--content-cover-radius);
+  background: transparent;
+  scroll-margin: 24px;
+  transition: transform var(--focus-duration) var(--ease);
+}
+.content-card:hover,
+.content-card:focus {
+  transform: translateY(-4px);
+}
+.content-card:focus {
+  outline: none;
+}
+.content-card:focus::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--content-cover-radius);
+  outline: 3px solid var(--focus);
+  outline-offset: 6px;
+  pointer-events: none;
+}
+.content-card:active {
+  transform: scale(0.98);
+}
+.content-poster {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--content-cover-radius);
+  background: transparent;
+  box-shadow: var(--card-shadow);
+}
+.content-poster > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.content-poster > svg {
+  width: 40px;
+  height: 40px;
+  color: var(--muted);
+  stroke-width: 1.4;
+}
+.content-details {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--content-details-radius);
+}
+.content-playback-state,
+.content-details {
+  background: var(--navigation-surface);
+  -webkit-backdrop-filter: var(--navigation-filter);
+  backdrop-filter: var(--navigation-filter);
+  box-shadow: var(--card-shadow);
+}
+.content-playback-state {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+/* Mask each pane itself: masking the rail would stop blur from sampling the wallpaper. */
+.content-poster,
+.content-playback-state,
+.content-details {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 var(--content-edge-fade),
+    #000 calc(100% - var(--content-edge-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 var(--content-edge-fade),
+    #000 calc(100% - var(--content-edge-fade)),
+    transparent
+  );
+  -webkit-mask-size: var(--rail-mask-width, 100%) calc(100% + 100px);
+  mask-size: var(--rail-mask-width, 100%) calc(100% + 100px);
+  -webkit-mask-position: var(--rail-mask-offset, 0px) -50px;
+  mask-position: var(--rail-mask-offset, 0px) -50px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-clip: no-clip;
+  mask-clip: no-clip;
+}
+.content-progress {
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin: 0;
+  border: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  appearance: none;
+  background: rgba(229, 238, 232, 0.2);
+}
+.content-progress::-webkit-progress-bar {
+  background: rgba(229, 238, 232, 0.2);
+  border-radius: inherit;
+}
+.content-progress::-webkit-progress-value {
+  background: var(--focus);
+  border-radius: inherit;
+}
+.content-progress::-moz-progress-bar {
+  background: var(--focus);
+  border-radius: inherit;
+}
+.content-title,
+.content-app {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.content-title {
+  font-size: 19px;
+  font-weight: 550;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.content-app {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.content-preview-notice {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.content-status {
+  margin-top: 12px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #d0d9d1;
+}
+.content-empty > button {
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+  .home-content-section {
+    padding-right: 0;
+    margin-top: 12px;
+  }
+  .content-card {
+    --content-cover-radius: 20px;
+    --content-details-radius: 18px;
+  }
+  .content-rail {
+    --content-edge-fade: 24px;
+    margin-inline: -14px;
+    grid-auto-columns: 264px;
+  }
+  .home-content-section h2 {
+    font-size: 23px;
+  }
+  .content-status {
+    font-size: 15px;
+  }
+}
+
+.content-poster--app-icon > img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-card:hover,
+  .content-card:focus,
+  .content-card:focus {
+    outline: none;
+  }
+  .content-card:focus::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--content-cover-radius);
+    outline: 3px solid var(--focus);
+    outline-offset: 6px;
+    pointer-events: none;
+  }
+  .content-card:active {
+    transform: none;
+  }
+}
+:root[data-motion='off'] .content-card {
+  transform: none !important;
+}

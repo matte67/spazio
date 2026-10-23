@@ -1,0 +1,34 @@
+:root {
+  color-scheme: dark;
+  --ink: #101719;
+  --text: #f4f5f0;
+  --muted: #bac3bf;
+  --accent: #dce6ce;
+  --focus: #f6f9ee;
+  --safe-x: clamp(40px, 5vw, 110px);
+  --body-size: clamp(17px, 1.22vw, 24px);
+  --favorite-banner-blur: 13px;
+  --home-content-top: 46px;
+  --header-height: 140px;
+  --dock-control-size: 68px;
+  --dock-gap: 14px;
+  --dock-length: calc(var(--dock-control-size) * 3 + var(--dock-gap) * 2 + var(--dock-padding) * 2);
+  --dock-half-length: calc(var(--dock-control-size) * 1.5 + var(--dock-gap) + var(--dock-padding));
+  --dock-inset: 38px;
+  --dock-size: 88px;
+  --dock-padding: 10px;
+  --dock-radius: 44px;
+  --navigation-surface: rgba(229, 238, 232, 0.12);
+  --navigation-filter: blur(24px) saturate(1.15);
+  --content-cover-radius: 24px;
+  --content-details-radius: 20px;
+  --content-block-gap: 10px;
+  --card-shadow: 0 14px 34px rgba(0, 0, 0, 0.18), 0 3px 8px rgba(0, 0, 0, 0.1);
+  --focus-duration: 180ms;
+  --scene-duration: 260ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --frame-inset: 20px;
+  --frame-radius: 34px;
+  --wallpaper-blur: 12px;
+  --wallpaper-blur-bottom: 42px;
+}

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 690" role="img" aria-labelledby="title desc">
+  <title id="title">Flusso di installazione di Spazio</title>
+  <desc id="desc">Verifica Android TV 11 o successivo, scegli installazione da chiavetta USB o ADB, poi avvia Spazio e impostalo come Home.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#667780"/>
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #19272d; }
+      .title { font-size: 30px; font-weight: 700; letter-spacing: -.5px; }
+      .subtitle { font-size: 16px; fill: #52636b; }
+      .heading { font-size: 19px; font-weight: 650; }
+      .body { font-size: 15px; fill: #40525a; }
+      .tag { font-size: 12px; font-weight: 700; letter-spacing: .7px; }
+      .card { fill: #fff; stroke: #d8e1e2; stroke-width: 1.5; }
+      .line { fill: none; stroke: #7c8d93; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1120" height="690" rx="24" fill="#f3f7f6"/>
+  <text x="56" y="58" class="title">Installa Spazio sulla TV</text>
+  <text x="56" y="84" class="subtitle">Controlla la compatibilità, scegli un metodo e completa la configurazione Home.</text>
+
+  <rect x="56" y="112" width="1008" height="96" rx="16" fill="#e7f2ed" stroke="#c2ddd1" stroke-width="1.5"/>
+  <circle cx="92" cy="160" r="19" fill="#18876a"/>
+  <text x="92" y="166" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">1</text>
+  <text x="126" y="153" class="heading">Verifica la TV</text>
+  <text x="126" y="178" class="body">Serve Android TV o Google TV con Android 11 o successivo.</text>
+  <path d="M560 208v30M560 238H302v22M560 238h258v22" class="line"/>
+
+  <rect x="56" y="268" width="490" height="236" rx="18" class="card"/>
+  <rect x="56" y="268" width="490" height="8" rx="4" fill="#18876a"/>
+  <text x="84" y="310" class="tag" fill="#18876a">METODO A · PIÙ SEMPLICE</text>
+  <text x="84" y="344" class="heading">Chiavetta USB</text>
+  <text x="84" y="380" class="body">1. Copia l’APK sulla chiavetta.</text>
+  <text x="84" y="408" class="body">2. Sulla TV apri File e seleziona l’APK.</text>
+  <text x="84" y="436" class="body">3. Consenti l’installazione se richiesto.</text>
+  <rect x="84" y="458" width="246" height="28" rx="14" fill="#edf5f1"/>
+  <text x="207" y="477" text-anchor="middle" class="tag" fill="#247157">NON SERVE DEBUG USB</text>
+
+  <rect x="574" y="268" width="490" height="236" rx="18" class="card"/>
+  <rect x="574" y="268" width="490" height="8" rx="4" fill="#486ad5"/>
+  <text x="602" y="310" class="tag" fill="#486ad5">METODO B · DA COMPUTER</text>
+  <text x="602" y="344" class="heading">ADB via USB o Wi-Fi</text>
+  <text x="602" y="380" class="body">1. Attiva Opzioni sviluppatore e debug sulla TV.</text>
+  <text x="602" y="408" class="body">2. Collega/associa il computer con ADB.</text>
+  <text x="602" y="436" class="body">3. Esegui adb install -r app-debug.apk.</text>
+  <rect x="602" y="458" width="236" height="28" rx="14" fill="#eef1fd"/>
+  <text x="720" y="477" text-anchor="middle" class="tag" fill="#435eb7">RICHIEDE DEBUG ADB</text>
+
+  <path d="M302 504v30h258M818 504v30H560v0" class="line"/>
+  <rect x="192" y="548" width="736" height="96" rx="16" fill="#19272d"/>
+  <circle cx="232" cy="596" r="19" fill="#dce9cd"/>
+  <text x="232" y="602" text-anchor="middle" font-size="16" font-weight="700" fill="#19272d">2</text>
+  <text x="270" y="586" font-size="19" font-weight="650" fill="#fff">Apri Spazio e impostalo come Home</text>
+  <text x="270" y="612" font-size="15" fill="#c6d2d1">Premi Home, scegli Spazio e conferma “Sempre”.</text>
+</svg>
